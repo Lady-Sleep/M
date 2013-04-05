@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>事件：事件冒泡流（IE）与事件捕获流</title>
+</head>
+
+<body>
+	<style type="text/css">
+	*{margin:0;padding:0;line-height:140%;}
+	body{padding:20px;}
+	h3{margin-bottom:20px;}
+	p{margin-bottom:20px;color:#fc0;}
+	.pc{color:#fcc;}
+	</style>
+	<h3>IE只支持事件冒泡流，mozilla,chrome,safari,opera支持事件捕获流</h3>
+	<p>
+		添加事件的方法：IE：attachEvent(eventname,boolean),detachEvent(eventname,booleaneventname,boolean)，其他浏览器：addEventListener(eventname,function,boolean),removeEventListener(eventname,function,boolean)
+	</p>
+	<p>大多数情况下，都是将事件处理程序添加到事件流的冒泡阶段，这样可以最大限度地兼容各种浏览器。</p>
+	<p class="pc">true表示事件在捕获阶段执行，false表示事件在冒泡阶段执行。</p>
+	<p>不支持冒泡的事件：blur,load,unload,focus</p>
+	<input type="button" value="click me" id="btn" />
+	<script type="text/javascript">
+	//面向对象方法实现跨浏览器的事件处理程序
+	var EventUntil = {
+		addHandler:function(element,type,handler){
+			if(element.addEventListener){
+				element.addEventListener(type,handler,false);
+			}else{
+				element.attachEvent("on" + type,handler);
+			}
+		},
+		removeHandler:function(element,type,handler){
+			if(element.removeEventListener){
+				element.removeEventListener(type,handler);
+			}else{
+				element.detachEvent("on" + type,handler)
+			}
+		}
+	}
+	</script>
+	<script type="text/javascript">
+	var btn = document.getElementById("btn");
+	function showMsg(){
+		alert(this.value);
+	}
+	EventUntil.addHandler(btn,"click",showMsg);
+	EventUntil.removeHandler(btn,"click",showMsg);
+	</script>
+</body>
+</html>
